@@ -1,59 +1,54 @@
 #include "sort.h"
 
 /**
- * insertion_sort_list - sorts list with insertion sort
- * @list: input list to sort
+ * swap - swaps 2 nodes in a doubly-linked list
+ * @a: address of first node
+ * @b: address of second node
+ *
+ * Return: void
  */
-void insertion_sort_list(listint_t **list)
+void swap(listint_t *a, listint_t *b)
 {
-	listint_t *temp, *pn, *nxt;
+	if (a->prev)
+		a->prev->next = b;
+	if (b->next)
+		b->next->prev = a;
+	a->next = b->next;
+	b->prev = a->prev;
+	a->prev = b;
+	b->next = a;
 
-	if (list && *list && (*list)->next)
-	{
-		temp = (*list)->next;
-		pn = temp->prev;
-		nxt = temp->next;
-
-		while (temp)
-		{
-			if (temp->n < pn->n)
-			{
-				swap_list(pn, temp, nxt, list);
-			}
-			temp = nxt;
-			if (temp)
-			{
-				nxt = temp->next;
-				pn = temp->prev;
-			}
-		}
-	}
 }
 
 /**
- * swap_list - swaps the position of two nodes in a linked list
- * @pn: previous node
- * @temp: temp
- * @nxt: next node
- * @h: head of list
+ * insertion_sort_list - insertion sorts a doubly-linked list
+ * @list: address of pointer to head node
+ *
+ * Return: void
  */
-void swap_list(listint_t *pn, listint_t *temp, listint_t *nxt, listint_t **h)
+void insertion_sort_list(listint_t **list)
 {
+	listint_t *i, *j;
 
-	while (pn && temp->n < pn->n)
+	if (!list || !*list || !(*list)->next)
+		return;
+	i = (*list)->next;
+	while (i)
 	{
-		if (nxt)
-			nxt->prev = pn;
-		temp->next = pn;
-		temp->prev = pn->prev;
-		if (pn->prev)
-			(pn->prev)->next = temp;
-		pn->prev = temp;
-		pn->next = nxt;
-		nxt = pn;
-		pn = temp->prev;
-		if ((*h)->prev)
-			*h = (*h)->prev;
-		print_list(*h);
+		j = i;
+		i = i->next;
+		while (j && j->prev)
+		{
+			if (j->prev->n > j->n)
+			{
+				swap(j->prev, j);
+				if (!j->prev)
+					*list = j;
+				print_list((const listint_t *)*list);
+			}
+			else
+				j = j->prev;
+		}
+
 	}
 }
