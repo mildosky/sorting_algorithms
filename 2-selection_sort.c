@@ -1,47 +1,33 @@
 #include "sort.h"
-void swap_int(int *a, int *b);
 /**
-* selection_sort - a function that sorts an array of integers in ascending
-* order using the selection sort algorithm
-* @array: array of integers
-* @size: size of array
-**/
+ *selection_sort- function that sorts using selection sort algorithm
+ *
+ *@array: array to be sorted
+ *@size: size of the array
+ *
+ */
 void selection_sort(int *array, size_t size)
 {
-	size_t j, i;
-	int *temp;
+	size_t i, j, k;
+	int temp;
 
-	temp = NULL;
-	for (j = 0; array && j < size - 1; j++)
+	if (!array || !size)
+		return;
+	for (i = 0; i < size - 1; i++)
 	{
-		temp = NULL;
-		for (i = j + 1; i < size; i++)
+		for (j = size - 1, k = i + 1; j > i; j--)
 		{
-			if (array[i] < array[j])
+			if (array[j] < array[k])
 			{
-				if (temp && array[i] < *temp)
-					temp = &array[i];
-				if (!temp)
-					temp = &array[i];
+				k = j;
 			}
 		}
-		if (temp)
+		if (array[i] > array[k])
 		{
-			swap_int(temp, &array[j]);
+			temp = array[i];
+			array[i] = array[k];
+			array[k] = temp;
 			print_array(array, size);
 		}
 	}
-}
-/**
-* swap_int - swaps the values of two integers
-* @a: take an int
-* @b: take an int
-**/
-void swap_int(int *a, int *b)
-{
-	int temp;
-
-	temp = *a;
-	*a = *b;
-	*b = temp;
 }
