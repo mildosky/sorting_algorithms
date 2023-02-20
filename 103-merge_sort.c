@@ -1,78 +1,95 @@
 #include "sort.h"
 
+void divide(int beg, int pivot, int *i, size_t size);
+int partition(int beg, int pivot, int *i, size_t size);
+void swap_int(int *a, int *b);
 /**
- * merge_sort - sorts an array with the Merge Sort algorithm
- * @array: array of ints to sort
+ * quick_sort - sorts an array of integers in ascending order
+ * @array: array to be sorted
  * @size: size of the array
  */
-void merge_sort(int *array, size_t size)
+void quick_sort(int *array, size_t size)
 {
-	int *arr;
+	int beg = 0, pivot;
 
-	if (!array || size < 2)
-		return;
-
-	arr = malloc(sizeof(int) * size);
-
-	merge_recursion(arr, array, 0, size);
-	free(arr);
-}
-
-/**
- * merge_recursion - recursive function that merge sorts an array
- * @arr: copy array
- * @array: array to merge sort
- * @left: index of the left element
- * @right: index of the right element
- */
-void merge_recursion(int *arr, int *array, size_t left, size_t right)
-{
-	size_t middle;
-
-	if (right - left > 1)
+	if (array && size > 1)
 	{
-		middle = (right - left) / 2 + left;
-		merge_recursion(arr, array, left, middle);
-		merge_recursion(arr, array, middle, right);
-		merge_subarray(arr, array, left, middle, right);
+		pivot = (size - 1);
+		divide(beg, pivot, array, size);
 	}
 }
-
 /**
- * merge_subarray - merges subarrays
- * @arr: copy array
- * @array: array to merge
- * @left: index of the left element
- * @middle: index of the middle element
- * @right: index of the right element
- */
-void merge_subarray(int *arr, int *array, size_t left,
-		size_t middle, size_t right)
+* divide - recursively partition
+* @beg: beginning of divided array
+* @pivot: end of divided array
+* @i: the beginning of the array
+* @size: size of array
+**/
+void divide(int beg, int pivot, int *i, size_t size)
 {
-	size_t i, j, k = 0;
+	int first, second, np;
 
-	printf("Merging...\n");
-	printf("[left]: ");
-	print_array(array + left, middle  - left);
-	printf("[right]: ");
-	print_array(array + middle, right - middle);
-
-	for (i = left, j = middle; i < middle && j < right; k++)
+	if (beg < pivot)
 	{
-		if (array[i] < array[j])
-			arr[k] = array[i++];
+		second = partition(beg, pivot, i, size);
+		first = beg;
+		np = second - 1;
+		if (first != np && second != pivot)
+			np--;
+		divide(first, np, i, size);
+		divide(second, pivot, i, size);
+	}
+}
+/**
+* partition - divides an array
+* @beg: beginning of array separated
+* @pivot: end of array separated
+* @i: the beginning of array
+* @size: size of array
+* Return: the new beginning
+**/
+int partition(int beg, int pivot, int *i, size_t size)
+{
+	int temp;
+
+	temp = beg;
+	while (temp != pivot)
+	{
+		if (i[temp] < i[pivot])
+		{
+			if (temp != beg)
+			{
+				swap_int(i + temp, i + beg);
+				print_array(i, size);
+			}
+			temp++;
+			beg++;
+		}
 		else
-			arr[k] = array[j++];
+			temp++;
 	}
+	if (beg != pivot)
+	{
+		if (i[beg] > i[pivot])
+		{
+			swap_int(i + pivot, i + beg);
+			print_array(i, size);
+		}
+		beg++;
+	}
+	return (beg);
+}
 
-	while (i < middle)
-		arr[k++] = array[i++];
-	while (j < right)
-		arr[k++] = array[j++];
+/**
+  * swap_int - swaps the values of two integers
+  * @a: take an int
+  * @b: take an int
+  */
+void swap_int(int *a, int *b)
+{
+	int temp;
 
-	for (k = left, i = 0; k < right; k++)
-		array[k] = arr[i++];
-
-	printf("[Done]: ");
-	print_array(array + left, right - left);
+	temp = *a;
+	*a = *b;
+	*b = temp;
 }
